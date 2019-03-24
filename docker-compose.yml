@@ -10,17 +10,32 @@ services:
       - --storage.tsdb.path=/prometheus/data
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /data/prometheus:/prometheus
+      - ./endpoints:/etc/prometheus/endpoints
       # - prometheus:/prometheus/data
     depends_on: 
      - cadvisor
+     - node-exporter
     networks: 
+      - wwatch
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    expose: 
+      - 9100
+    # ports:
+      # - '9100:9100'   # 暂不映射
+    networks:
       - wwatch
 
   cadvisor:
     image: google/cadvisor
     container_name: cadvisor
-    ports: 
-      - 8080:8080
+    expose:
+      - 8080
+    # ports:
+      # - '8080:8080'   # 暂不映射
     networks: 
       - wwatch
     volumes:
@@ -34,17 +49,13 @@ services:
     container_name: grafana
     ports: 
       - '3000:3000'
-    # command: chown -R grafana:grafana /var/lib/grafana
     environment: 
       - GF_SECURITY_ADMIN_PASSWORD=admin
     networks:
       - wwatch
     volumes:
-      - type: volume
-        source: grafana
-        target: /var/lib/grafana
-        volume:
-          nocopy: true
+      - /data/grafana:/var/lib/grafana
+      # - grafana:/var/lib/grafana
 
   portainer:
     image: portainer/portainer
@@ -64,9 +75,9 @@ networks:
     attachable: true
 
 volumes:
-  grafana:
-    name: grafana-data
-  prometheus:
-    name: prometheus-data
+  # grafana:
+    # name: grafana-data      # 权限问题，转用 mount
+  # prometheus:
+    # name: prometheus-data
   portainer:
     name: portainer-data

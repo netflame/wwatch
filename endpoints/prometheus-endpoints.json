@@ -1,0 +1,10 @@
+[
+    {
+        "labels": {
+            "job": "prometheus"
+        },
+        "targets": [
+            "prometheus:9090"
+        ]
+    }
+]

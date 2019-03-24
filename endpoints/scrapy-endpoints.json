@@ -1,0 +1,10 @@
+[
+    {
+        "labels": {
+            "job": "scrapy"
+        },
+        "targets": [
+            "scrapyd:3590"
+        ]
+    }
+]

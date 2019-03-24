@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 10s          # how frequently to scrape targeets by default
-  scrape_timeout: 10s           # how long until a scrape requests time out
+  scrape_interval: 5s           # how frequently to scrape targeets by default
+  scrape_timeout: 5s            # how long until a scrape requests time out
   evaluation_interval: 1m       # how frequently to evaluate rules
   external_labels:
     monitor: wwatch
@@ -9,30 +9,22 @@ global:
 # [ - <filepath_glob> ... ]
 
 scrape_configs:
+  - job_name: prometheus
+    file_sd_configs:
+      - files:
+        - ./endpoints/prometheus-endpoints.json
+  - job_name: node
+    file_sd_configs:
+      - files:
+        - ./endpoints/node-endpoints.json
+        refresh_interval: 3m
   - job_name: cadvisor
-    scrape_interval: 5s
-    metrics_path: /metrics
-    scheme: http
-    static_configs:
-      - targets:
-        - cadvisor:8080
+    file_sd_configs:
+      - files:
+        - ./endpoints/cadvisor-endpoints.json
+        refresh_interval: 3m
   - job_name: scrapy
-    scrape_interval: 5s
-    static_configs:
-      - targets:
-        - 0.0.0.0:3590
-
-# Alerting specifies settings related to the Alertmanager.
-# alerting:
-  # alert_relabel_configs:
-    # [ - <relabel_config> ... ]
-  # alertmanagers:
-    # [ - <alertmanager_config> ... ]
-
-# Settings related to the remote write feature.
-# remote_write:
-  # [ - <remote_write> ... ]
-
-# Settings related to the remote read feature.
-# remote_read:
-  # [ - <remote_read> ... ]
+    file_sd_configs:
+      - files:
+        - ./endpoints/scrapy-endpoints.json
+        refresh_interval: 3m

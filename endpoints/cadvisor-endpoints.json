@@ -1,0 +1,10 @@
+[
+    {
+        "labels": {
+            "job": "cadvisor"
+        },
+        "targets": [
+            "cadvisor:8080"
+        ]
+    }
+]
