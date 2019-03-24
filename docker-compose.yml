@@ -1,0 +1,72 @@
+version: '3.7'
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports: 
+      - '9090:9090'
+    command: 
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus/data
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # - prometheus:/prometheus/data
+    depends_on: 
+     - cadvisor
+    networks: 
+      - wwatch
+
+  cadvisor:
+    image: google/cadvisor
+    container_name: cadvisor
+    ports: 
+      - 8080:8080
+    networks: 
+      - wwatch
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports: 
+      - '3000:3000'
+    # command: chown -R grafana:grafana /var/lib/grafana
+    environment: 
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - wwatch
+    volumes:
+      - type: volume
+        source: grafana
+        target: /var/lib/grafana
+        volume:
+          nocopy: true
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    ports:
+      - '9000:9000'
+    networks: 
+      - wwatch
+    volumes:
+      - portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks: 
+  wwatch:
+    name: wwatch-net
+    driver: bridge
+    attachable: true
+
+volumes:
+  grafana:
+    name: grafana-data
+  prometheus:
+    name: prometheus-data
+  portainer:
+    name: portainer-data
