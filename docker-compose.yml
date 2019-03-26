@@ -13,9 +13,10 @@ services:
       - /data/prometheus:/prometheus
       - ./endpoints:/etc/prometheus/endpoints
       # - prometheus:/prometheus/data
-    depends_on: 
-     - cadvisor
-     - node-exporter
+    # depends_on: 
+    #  - cadvisor
+    #  - node-exporter
+    #  - pushgateway
     networks: 
       - wwatch
 
@@ -26,6 +27,14 @@ services:
       - 9100
     # ports:
       # - '9100:9100'   # 暂不映射
+    networks:
+      - wwatch
+
+  pushgateway:
+    image: prom/pushgateway
+    container_name: pushgateway
+    ports:
+      - '9091:9091'
     networks:
       - wwatch
 

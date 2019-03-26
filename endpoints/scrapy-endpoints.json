@@ -4,7 +4,7 @@
             "job": "scrapy"
         },
         "targets": [
-            "scrapyd:3590"
+            "pushgateway:9091"
         ]
     }
 ]
